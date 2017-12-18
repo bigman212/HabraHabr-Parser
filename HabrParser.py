@@ -1,6 +1,8 @@
-from urllib.request import urlopen
 import re
-import urllib3.exceptions, urllib.error
+import sys
+import urllib.error
+from urllib.request import urlopen
+
 from DatabaseManager import *
 
 
@@ -70,15 +72,45 @@ class HabrParser:
                 month = "0{}".format(all_months.index(month) + 1)
         return "{}-{}-{}".format(year, month, day)
 
-
-# ip.insert_author(Author(current_author))
-# ip.insert_article(Article(current_link, current_title, current_author, '10-11-2017'))
+# TODO: добавить добавление статей
+# def insertion():
+#
+#     # db.get_articles_by_group('Графический дизайн', '2016-01-01', '2018-01-01')
+#     db.get_top_groups()
+#     db.get_top_users()
+#     db.get_articles_by_week()
+#     current_link = "https://habrahabr.ru/company/dataline/blog/336828/"
+#     habr_parser = HabrParser(current_link)
+#
+#     for group in habr_parser.groups:
+#         db.insert_group(Group(group))
+#
+#     db.insert_author(Author(habr_parser.author))
+#     db.insert_article(Article(current_link, habr_parser.title, habr_parser.author, habr_parser.date))
+#
+#     for group in habr_parser.groups:
+#         db.insert_article_data(Article_Group(habr_parser.title, group))
+#
+#     db.commit()
 
 
 if __name__ == '__main__':
     db = DatabaseManager()
-    current_link = ""
-    habr_parser = HabrParser(current_link)
-    for group in habr_parser.groups:
-        db.insert_article_data(Article_Group(habr_parser.title, group))
-    db.commit()
+    input()
+    for arg in sys.argv:
+        if arg == '-tu':
+            db.get_top_users()
+        elif arg == '-tg':
+            db.get_top_groups()
+        elif arg == '-aw':
+            db.get_articles_by_week()
+        elif arg == '-ag':
+            from_time = input("Enter from date (ex. 1998-12-05): ")
+            to_time = input("Enter to date: ")
+            group = input("Enter group to search: ")
+            db.get_articles_by_group(group, from_time, to_time)
+
+
+
+
+

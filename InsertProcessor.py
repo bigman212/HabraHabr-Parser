@@ -30,29 +30,25 @@ class _AuthorsInsert:
         self.__cur = cur
 
     def insert(self, author: Author):
-        self.__cur.execute(f"SELECT article_count FROM {Author.TABLE_NAME} "
-                           f"WHERE author_name = '{author.author_name}'")
+        self.__cur.execute("SELECT article_count FROM {} "
+                           "WHERE author_name = '{}'".format(Author.TABLE_NAME, author.author_name))
         current_author_articles = self.__cur.fetchone()
         if current_author_articles:
             self.__add_article(current_author_articles[0], author)
-
         else:
             self.__create_new(author)
 
-    def get_all(self):
-        self.__cur.execute(f"SELECT * FROM {Author.TABLE_NAME}")
-        for a in self.__cur.fetchall():
-            print(a)
-
     def __create_new(self, author: Author):
-        self.__cur.execute(f"INSERT INTO {Author.TABLE_NAME}(author_name, article_count) "
-                           f"VALUES ('{author.author_name}', {author.article_count});")
+        self.__cur.execute("INSERT INTO {}(author_name, article_count) "
+                           "VALUES ('{}', {})"
+                           .format(Author.TABLE_NAME, author.author_name, author.article_count))
 
     def __add_article(self, new_count: int, author: Author):
         author.article_count = new_count  # использовать ли абстракцию везде где можно
-        self.__cur.execute(f"UPDATE {Author.TABLE_NAME} "
-                           f"SET article_count = {author.article_count + 1} "
-                           f"WHERE author_name = '{author.author_name}' ")
+        self.__cur.execute("UPDATE {} "
+                           "SET article_count = {} "
+                           "WHERE author_name = '{}' "
+                           .format(Author.TABLE_NAME, author.article_count + 1, author.author_name))
 
 
 class _GroupsInsert:
@@ -60,7 +56,8 @@ class _GroupsInsert:
         self.__cur = cur
 
     def insert(self, group: Group):
-        self.__cur.execute(f"SELECT article_count FROM {Group.TABLE_NAME} WHERE group_name = '{group.group_name}'")
+        self.__cur.execute("SELECT article_count FROM {} WHERE group_name = '{}'"
+                           .format(Group.TABLE_NAME, group.group_name))
         current_group_articles = self.__cur.fetchone()
         if current_group_articles:
             self.__add_article(current_group_articles[0], group)
@@ -70,18 +67,16 @@ class _GroupsInsert:
 
     def __add_article(self, new_count: int, group: Group):
         group.article_count = new_count
-        self.__cur.execute(f"UPDATE {GROUP.TABLE_NAME} "
-                           f"SET article_count = {GROUP.article_count + 1} "
-                           f"WHERE group_name = '{group.group_name}' ")
+        self.__cur.execute("UPDATE {} "
+                           "SET article_count = {} "
+                           "WHERE group_name = '{}'"
+                           .format(Group.TABLE_NAME, group.article_count + 1, group.group_name))
 
     def __create_new(self, group: Group):
-        self.__cur.execute(f"INSERT INTO {GROUP.TABLE_NAME}(group_name, article_count) "
-                           f"VALUES ('{group.group_name}', {GROUP.article_count});")
+        self.__cur.execute("INSERT INTO {}(group_name, article_count) "
+                           "VALUES ('{}', {})"
+                           .format(Group.TABLE_NAME, group.group_name, group.article_count))
 
-    def get_all(self):
-        self.__cur.execute(f"SELECT * FROM {Group.TABLE_NAME}")
-        for a in self.__cur.fetchall():
-            print(a)
 
 
 class _ArticleInsert:
@@ -89,7 +84,8 @@ class _ArticleInsert:
         self.__cur = cur
 
     def insert(self, article: Article):
-        self.__cur.execute(f"SELECT id FROM {Article.TABLE_NAME} WHERE title = '{article.title}'")
+        query = "SELECT id FROM {} WHERE title = '{}'".format(Article.TABLE_NAME, article.title)
+        self.__cur.execute(query)
         current_article_id = self.__cur.fetchone()
         if current_article_id:
             print("ALREADY IN DATABASE")
@@ -97,16 +93,13 @@ class _ArticleInsert:
             self.__create_new(article)
 
     def __create_new(self, article: Article):
-        self.__cur.execute(f"SELECT id FROM {Author.TABLE_NAME} WHERE author_name = '{article.author_name}'")
+        self.__cur.execute("SELECT id FROM {} WHERE author_name = '{}'"
+                           .format(Author.TABLE_NAME, article.author_name))
         current_author_id = self.__cur.fetchone()[0]
-        self.__cur.execute(f"INSERT INTO {Article.TABLE_NAME}(link, title, author_id, creation_date) "
-                           f"VALUES ('{article.link}', '{article.title}', {current_author_id}, '{article.creation_date}');")
-
-    def get_all(self):
-        self.__cur.execute(f"SELECT * FROM {Article.TABLE_NAME}")
-        for a in self.__cur.fetchall():
-            print(a)
-
+        self.__cur.execute("INSERT INTO {}(link, title, author_id, creation_date) "
+                           "VALUES ('{}', '{}', {}, '{}')"
+                           .format(Article.TABLE_NAME, article.link, article.title, current_author_id,
+                                   article.creation_date))
 
 class _ArticleGroupInsert:
     def __init__(self, cur):
@@ -115,15 +108,18 @@ class _ArticleGroupInsert:
     def insert(self, article_group: Article_Group):
         article_id = self.find_article_id(article_group.article_name)
         group_id = self.find_group_id(article_group.group_name)
-        self.__cur.execute(f"INSERT INTO {Article_Group.TABLE_NAME}(article_id, group_id) "
-                           f"VALUES ({article_id}, {group_id})")
+        self.__cur.execute("INSERT INTO {}(article_id, group_id) "
+                           "VALUES ({}, {})"
+                           .format(Article_Group.TABLE_NAME, article_id, group_id))
 
     def find_article_id(self, article_name):
-        self.__cur.execute(f"SELECT id FROM {Article.TABLE_NAME} WHERE title = '{article_name}'")
+        self.__cur.execute("SELECT id FROM {} WHERE title = '{}'"
+                           .format(Article.TABLE_NAME, article_name))
         current_id = self.__cur.fetchone()[0]
         return current_id
 
     def find_group_id(self, group_name):
-        self.__cur.execute(f"SELECT id FROM {Group.TABLE_NAME} WHERE group_name = '{group_name}'")
+        self.__cur.execute("SELECT id FROM {} WHERE group_name = '{}'"
+                           .format(Group.TABLE_NAME, group_name))
         current_id = self.__cur.fetchone()[0]
         return current_id
