@@ -1,21 +1,15 @@
 import re
-import sys
 import urllib.error
 from urllib.request import urlopen
 
-from DatabaseManager import *
 
-
-# сделать сущности
-# попробывать re
-
-def is_habrahabr(link: str) -> bool:
+def _is_habrahabr(link: str) -> bool:
     return "habrahabr.ru/" in link
 
 
 class HabrParser:
     def __init__(self, link: str):
-        if is_habrahabr(link):
+        if _is_habrahabr(link):
             self.html_doc = self.__get_html(link)
 
             self.title = self.__parse_title()
@@ -92,25 +86,3 @@ class HabrParser:
 #         db.insert_article_data(Article_Group(habr_parser.title, group))
 #
 #     db.commit()
-
-
-if __name__ == '__main__':
-    db = DatabaseManager()
-    input()
-    for arg in sys.argv:
-        if arg == '-tu':
-            db.get_top_users()
-        elif arg == '-tg':
-            db.get_top_groups()
-        elif arg == '-aw':
-            db.get_articles_by_week()
-        elif arg == '-ag':
-            from_time = input("Enter from date (ex. 1998-12-05): ")
-            to_time = input("Enter to date: ")
-            group = input("Enter group to search: ")
-            db.get_articles_by_group(group, from_time, to_time)
-
-
-
-
-

@@ -1,4 +1,4 @@
-from entities import Author, Group, Article, Article_Group
+from habrparser.entities import Author, Group, Article, Article_Group
 
 
 # TODO : INSERT ABSTRACT CALSS AND EXCEPTIONS
