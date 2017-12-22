@@ -1,7 +1,7 @@
 from entities import Author, Group, Article, Article_Group
 
 
-# TODO : INSERT COMMITS AND EXCEPTIONS
+# TODO : INSERT ABSTRACT CALSS AND EXCEPTIONS
 class InsertProcessor:  # или INSERTProcessor
     def __init__(self, db_conn):
         self.conn = db_conn

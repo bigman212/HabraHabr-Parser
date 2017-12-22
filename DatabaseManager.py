@@ -4,19 +4,16 @@ from SelectProcessor import SelectProcessor
 from entities import Article, Author, Group, Article_Group
 
 
-def get_connection():
-    try:
-        conn = psycopg2.connect(dbname="habr_db", user="postgres", password="QWERTY676")
-        return conn
-    except psycopg2.Error as e:
-        print(e)
-        print("Check pass/login/conn")
-        exit(1)
-
-
 class DatabaseManager:
-    def __init__(self):
-        self.__db = get_connection()
+    """
+    Pure fabricated :class: DatabaseManager class is used for grouping two separate classes :class: InsertProcessor and
+    :class: SelectProcessor.
+    It is used to
+    """
+
+    def __init__(self, connection_with_db):
+
+        self.__db = connection_with_db
         self.__insert_p = InsertProcessor(self.__db)
         self.__select_p = SelectProcessor(self.__db)
 
@@ -39,7 +36,7 @@ class DatabaseManager:
         result = self.__select_p.get_articles_by_group(group_name, from_time, to_time)
         print("Articles found by {} and between {} - {}".format(group_name, from_time, to_time))
         for columns in result:
-                print("|{:<100}|{}|".format(columns[0], columns[1]))
+            print("|{:<100}|{}|".format(columns[0], columns[1]))
         print()
 
     def get_top_groups(self):
@@ -68,5 +65,3 @@ class DatabaseManager:
         for columns in result:
             print("|{:<40}|".format(columns[0]))
         print()
-
-
