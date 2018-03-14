@@ -66,8 +66,8 @@ class HabrParser:
 
     def __parse_title(self) -> str:
         """
-        Parses the title of habrahabr article with the :file:'re.py' and :meth: findall. Example::
-        Gets the first result of the :meth:'findall' query.
+        Parses the title of habrahabr article with the :file:'re.py' and :meth: findall.
+        Gets the first result of the :meth:'findall' query. Example::
 
             example_title = "<span class="post__title_text">Retrofit 2 with Android</span>"
             title = re.findall(:var:'title_regex') # returns ('Retrofit 2 with Android')
@@ -80,7 +80,7 @@ class HabrParser:
 
     def __parse_author(self) -> str:
         """
-        Works same as :meth:'__parse_title', but searches with the different regexp.
+        Works same as :meth:'__parse_title', but searches with the different regexp for an author.
         :return: author of the article
         """
         author_regex = '<span class="user-info__nickname user-info__nickname_small">(.+?)</span>'
@@ -102,9 +102,9 @@ class HabrParser:
     def __parse_date(self) -> str:
         """
         Searches article creation date and converts it to the format 'YYYY-MM-DD'
-        At first gets date in format like 'day month_name year (optional)' After spliting the string into a list
+        At first gets date in format like 'day month_name year(optional)' After spliting the string into a list
         and checking each element - returns formatted string.
-        If the second element of the list is char 'в' it means that article creation year = current year = 2017
+        If the second element of the list is a char 'в' it means that article creation year = current year = 2017
         :return: formatted str date in 'YYY-MM-DD'
         """
         date_regex = '<span class="post__time">(.+?)</span>'

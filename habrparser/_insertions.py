@@ -1,12 +1,8 @@
 from habrparser.entities import Author, Group, Article, Article_Group
 
 
-# TODO : INSERT ABSTRACT CALSS AND EXCEPTIONS
 class InsertProcessor:  # или INSERTProcessor
-    def __init__(self, db_conn):
-        self.conn = db_conn
-        cur = self.conn.cursor()
-
+    def __init__(self, cur):
         self.__authors_insert = _AuthorsInsert(cur)
         self.__groups_insert = _GroupsInsert(cur)
         self.__articles_insert = _ArticleInsert(cur)
@@ -78,7 +74,6 @@ class _GroupsInsert:
                            .format(Group.TABLE_NAME, group.group_name, group.article_count))
 
 
-
 class _ArticleInsert:
     def __init__(self, cur):
         self.__cur = cur
@@ -100,6 +95,7 @@ class _ArticleInsert:
                            "VALUES ('{}', '{}', {}, '{}')"
                            .format(Article.TABLE_NAME, article.link, article.title, current_author_id,
                                    article.creation_date))
+
 
 class _ArticleGroupInsert:
     def __init__(self, cur):
